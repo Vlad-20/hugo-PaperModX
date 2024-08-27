@@ -1,5 +1,6 @@
 {{- define "main" }}
 {{- $isNewsletter := eq .Type "newsletter" }}
+{{- $isContact := or (eq .Type "contact") (eq .Layout "contact") (eq .Permalink "/contact/") }}
 
 <article class="post-single">
   <header class="post-header">
@@ -68,7 +69,9 @@
   </footer>
 
   {{- if not (.Param "noComments") }}
-    <div class="comments-separator"></div>
+    {{- if not $isContact }} <!-- Skip comments-separator for Contact page -->
+      <div class="comments-separator"></div>
+    {{- end }}
     {{- partial "comments.html" . }}
   {{- end }}
 </article>

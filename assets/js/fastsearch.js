@@ -48,7 +48,10 @@ window.onload = function () {
             }
         }
     };
-    xhr.open('GET', "../index.json");
+    /*var currentPath = window.location.pathname;
+    var depth = currentPath.split('/').filter(part => part !== "").length - 1; // Calculate depth from root
+    var prefix = '../'.repeat(depth); // Construct the relative path prefix*/
+    xhr.open("GET", /*prefix + */ "https://examplesite.com/index.json");
     xhr.send();
 }
 
