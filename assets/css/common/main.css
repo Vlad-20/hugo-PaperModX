@@ -267,3 +267,85 @@ figure > img {
     width: inherit;
     height: inherit;
 }
+
+/* General Stats Bar Styles */
+#experience {
+    padding: 20px 0;
+}
+
+.stats-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.stat-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+}
+
+.stat-title {
+    flex: 1;
+    font-size: 1.05rem;
+    font-weight: bold;
+    color: #D3A569;
+}
+
+.progress-bar {
+    flex: 2;
+    height: 18px;
+    background-color: #333;
+    border-radius: 10px;
+    margin: 0 15px;
+    position: relative;
+    overflow: hidden;
+}
+
+.progress {
+    height: 100%;
+    background: linear-gradient(90deg, #fff 0%, #e0e0e0 100%);
+    /*background-color: #fff;*/
+    border-radius: 10px 0 0 10px;
+    position: relative;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    animation: fillProgress 2s ease-out;
+    width: var(--progress-width);
+    transition: width 2s ease-out;
+}
+
+@keyframes fillProgress {
+    from {
+        width: 0;
+    }
+    to {
+        width: var(--progress-width);
+    }
+}
+
+.stat-percent {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #D3A569;
+    font-size: 0.8rem;
+    font-weight: bold;
+    z-index: 2;
+    letter-spacing: 0.5px;
+}
+
+
+/* Customization for Arduino and Raspberry Pi on the Same Line */
+.flex-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.flex-row .stat-bar {
+    width: 48%;
+}
+
+
