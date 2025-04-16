@@ -20,7 +20,7 @@ window.onload = function () {
                             distance: 100,
                             threshold: 0.4,
                             ignoreLocation: true,
-                            keys: ['title', 'permalink', 'summary', 'content', 'tags']
+                            keys: ['title', 'permalink', 'summary', 'content']
                         };
                         fuse = new Fuse(data, options);
                     }
