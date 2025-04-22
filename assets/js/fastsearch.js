@@ -12,46 +12,27 @@ window.onload = function () {
     xhr.onreadystatechange = function () {
         if (xhr.readyState === 4) {
             if (xhr.status === 200) {
-                var data = JSON.parse(xhr.responseText);
-                if (data) {
-                    // fuse.js options; check fuse.js website for details
-                    var options = {
-                        distance: 100,
-                        threshold: 0.4,
-                        ignoreLocation: true,
-                        keys: [
-                            'title',
-                            'permalink',
-                            'summary',
-                            'content'
-                        ]
-                    };
-                    if (params.fuseOpts) {
-                        options = {
-                            isCaseSensitive: params.fuseOpts.iscasesensitive ? params.fuseOpts.iscasesensitive : false,
-                            includeScore: params.fuseOpts.includescore ? params.fuseOpts.includescore : false,
-                            includeMatches: params.fuseOpts.includematches ? params.fuseOpts.includematches : false,
-                            minMatchCharLength: params.fuseOpts.minmatchcharlength ? params.fuseOpts.minmatchcharlength : 1,
-                            shouldSort: params.fuseOpts.shouldsort ? params.fuseOpts.shouldsort : true,
-                            findAllMatches: params.fuseOpts.findallmatches ? params.fuseOpts.findallmatches : false,
-                            keys: params.fuseOpts.keys ? params.fuseOpts.keys : ['title', 'permalink', 'summary', 'content'],
-                            location: params.fuseOpts.location ? params.fuseOpts.location : 0,
-                            threshold: params.fuseOpts.threshold ? params.fuseOpts.threshold : 0.4,
-                            distance: params.fuseOpts.distance ? params.fuseOpts.distance : 100,
-                            ignoreLocation: params.fuseOpts.ignorelocation ? params.fuseOpts.ignorelocation : true
-                        }
+                try {
+                    var data = JSON.parse(xhr.responseText);
+                    if (data) {
+                        // Use params from hugo.yaml or default options
+                        var options = params.fuseOpts || {
+                            distance: 100,
+                            threshold: 0.4,
+                            ignoreLocation: true,
+                            keys: ['title', 'permalink', 'summary', 'content']
+                        };
+                        fuse = new Fuse(data, options);
                     }
-                    fuse = new Fuse(data, options); // build the index from the json file
+                } catch (e) {
+                    console.error("Error parsing search index:", e);
                 }
             } else {
-                console.log(xhr.responseText);
+                console.error("Error loading search index:", xhr.statusText);
             }
         }
     };
-    /*var currentPath = window.location.pathname;
-    var depth = currentPath.split('/').filter(part => part !== "").length - 1; // Calculate depth from root
-    var prefix = '../'.repeat(depth); // Construct the relative path prefix*/
-    xhr.open("GET", /*prefix + */ "https://examplesite.com/index.json");
+    xhr.open("GET", "/index.json");
     xhr.send();
 }
 
@@ -82,21 +63,23 @@ sInput.onkeyup = function (e) {
     if (fuse) {
         const results = fuse.search(this.value.trim()); // the actual query being run using fuse.js
         if (results.length !== 0) {
-            // build our html if result exists
-            let resultSet = ''; // our results bucket
-
+            let resultSet = '';
             for (let item in results) {
-                resultSet += `<li class="post-entry"><header class="entry-header">${results[item].item.title}&nbsp;»</header>` +
-                    `<a href="${results[item].item.permalink}" aria-label="${results[item].item.title}"></a></li>`
+                const post = results[item].item;
+                const tags = post.tags ? 
+                    `<div class="search-tags">Tags: ${post.tags.join(', ')}</div>` : '';
+                
+                resultSet += `
+                <li class="post-entry">
+                    <header class="entry-header">${post.title}&nbsp;»</header>
+                    ${tags}
+                    <a href="${post.permalink}" aria-label="${post.title}"></a>
+                </li>`;
             }
-
             resList.innerHTML = resultSet;
             resultsAvailable = true;
             first = resList.firstChild;
             last = resList.lastChild;
-        } else {
-            resultsAvailable = false;
-            resList.innerHTML = '';
         }
     }
 }
